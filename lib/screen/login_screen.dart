@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/core/common/sign_in_button.dart';
 
 import '../core/constants/constants.dart';
 
@@ -39,6 +40,7 @@ class LoginScreen extends StatelessWidget {
             child: Image.asset(Constants.loginEmotePath, height: 400),
           ),
           const SizedBox(height: 20),
+          const SignInButton()
         ],
       ),
     );

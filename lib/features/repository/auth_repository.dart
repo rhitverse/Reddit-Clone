@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:reddit_clone/core/constants/constants.dart';
 import 'package:reddit_clone/core/constants/firebase_constants.dart';
+import 'package:reddit_clone/core/providers/failure.dart';
 import 'package:reddit_clone/core/providers/firebase_provider.dart';
+import 'package:reddit_clone/core/providers/type_defs.dart';
 import 'package:reddit_clone/models/user_model.dart';
 
 final authRepositoryProvider = Provider(
@@ -31,7 +34,7 @@ class AuthRepository {
   CollectionReference get _users =>
       _firestore.collection(FirebaseConstants.userCollection);
 
-  void signInWithGoogle() async {
+  FutureEither<UserModel> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
@@ -45,7 +48,7 @@ class AuthRepository {
         credential,
       );
 
-      UserModel userModel;
+      late UserModel userModel;
 
       if (userCredential.additionalUserInfo!.isNewUser) {
         userModel = UserModel(
@@ -59,8 +62,11 @@ class AuthRepository {
         );
         await _users.doc(userCredential.user!.uid).set(userModel.toMap());
       }
+      return right(userModel);
+    } on FirebaseException catch (e) {
+      throw e.message!;
     } catch (e) {
-      print(e);
+      return left(Failure(e.toString()));
     }
   }
 }

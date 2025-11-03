@@ -45,17 +45,20 @@ class AuthRepository {
         credential,
       );
 
-      UserModel userModel = UserModel(
-        name: userCredential.user!.displayName ?? 'No Name',
-        profilePic: userCredential.user!.photoURL ?? Constants.avatarDefault,
-        banner: Constants.bannerDefault,
-        uid: userCredential.user!.uid,
-        isAuthenticated: true,
-        karma: 0,
-        awards: [],
-      );
+      UserModel userModel;
 
-      await _users.doc(userCredential.user!.uid).set(userModel.toMap());
+      if (userCredential.additionalUserInfo!.isNewUser) {
+        userModel = UserModel(
+          name: userCredential.user!.displayName ?? 'No Name',
+          profilePic: userCredential.user!.photoURL ?? Constants.avatarDefault,
+          banner: Constants.bannerDefault,
+          uid: userCredential.user!.uid,
+          isAuthenticated: true,
+          karma: 0,
+          awards: [],
+        );
+        await _users.doc(userCredential.user!.uid).set(userModel.toMap());
+      }
     } catch (e) {
       print(e);
     }

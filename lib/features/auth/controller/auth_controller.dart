@@ -1,9 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:reddit_clone/repository/auth_repository.dart';
+import 'package:reddit_clone/features/repository/auth_repository.dart';
 
 final authControllerProvider = Provider(
-  (ref) => AuthController(authRepository: ref.read(authRepositoryProvider),
-  ),
+  (ref) => AuthController(authRepository: ref.read(authRepositoryProvider)),
 );
 
 class AuthController {

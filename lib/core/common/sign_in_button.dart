@@ -20,14 +20,14 @@ class SignInButton extends ConsumerWidget {
         icon: Image.asset(Constants.googlePath, width: 35),
         label: const Text(
           'Continue with Google',
-          style: TextStyle(color: Colors.white,fontSize: 18),
+          style: TextStyle(color: Colors.white, fontSize: 18),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: Pallete.greyColor,
           minimumSize: const Size(double.infinity, 50),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-          )
+          ),
         ),
       ),
     );

@@ -7,28 +7,30 @@ import 'package:reddit_clone/core/providers/firebase_provider.dart';
 import 'package:reddit_clone/core/providers/type_defs.dart';
 import 'package:reddit_clone/models/community_model.dart';
 
-final communityRepositoryProvider = Provider((ref){
+final communityRepositoryProvider = Provider((ref) {
   return CommunityRepository(firestore: ref.watch(firestoreProvider));
 });
 
 class CommunityRepository {
   final FirebaseFirestore _firestore;
-  CommunityRepository({required FirebaseFirestore firestore}): _firestore = firestore;\
+  CommunityRepository({required FirebaseFirestore firestore})
+    : _firestore = firestore;
 
   FutureVoid createCommunity(Community community) async {
-try {
-  var communityDoc = await _communities.doc(community.name).get();
-  if (communityDoc.exists) {
-    throw 'Community with the same name already exists!';
+    try {
+      var communityDoc = await _communities.doc(community.name).get();
+      if (communityDoc.exists) {
+        throw 'Community with the same name already exists!';
+      }
+
+      return right(_communities.doc(community.name).set(community.toMap()));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
   }
 
-  return right(_communities.doc(community.name).set(community.toMap()));
-} on FirebaseException catch (e) {
-  throw e.message!;
-} catch (e) {
-  return left(Failure(e.toString()));
-}
-}
-
-CollectionReference get _communities => _firestore.collection(FirebaseConstants.communitiesCollection);
+  CollectionReference get _communities =>
+      _firestore.collection(FirebaseConstants.communitiesCollection);
 }

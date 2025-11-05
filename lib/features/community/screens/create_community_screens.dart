@@ -48,8 +48,20 @@ class _CreateCommunityScreensState
               maxLength: 21,
             ),
             const SizedBox(height: 30),
-
-            ElevatedButton(onPressed: () {}, child: Text('create Community')),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                minimumSize: const Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: Text(
+                'Create community',
+                style: TextStyle(color: Colors.white, fontSize: 17),
+              ),
+            ),
           ],
         ),
       ),

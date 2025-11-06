@@ -16,13 +16,13 @@ final authControllerProvider = StateNotifierProvider<AuthController, bool>(
 );
 
 final authStateChangeProvider = StreamProvider((ref) {
-  final AuthController = ref.watch(authControllerProvider.notifier);
-  return AuthController.authStateChange;
+  final authController = ref.watch(authControllerProvider.notifier);
+  return authController.authStateChange;
 });
 
 final getUserDataProvider = StreamProvider.family((ref, String uid) {
-  final AuthController = ref.watch(authControllerProvider.notifier);
-  return AuthController.getUserData(uid);
+  final authController = ref.watch(authControllerProvider.notifier);
+  return authController.getUserData(uid);
 });
 
 class AuthController extends StateNotifier<bool> {
@@ -41,8 +41,8 @@ class AuthController extends StateNotifier<bool> {
     state = false;
     user.fold(
       (l) => showSnackBar(context, l.message),
-      (UserModel) =>
-          _ref.read(userProvider.notifier).update((state) => UserModel),
+      (userModel) =>
+          _ref.read(userProvider.notifier).update((state) => userModel),
     );
   }
 

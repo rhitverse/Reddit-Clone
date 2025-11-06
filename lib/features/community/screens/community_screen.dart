@@ -43,6 +43,27 @@ class CommunityScreen extends ConsumerWidget {
                             radius: 35,
                           ),
                         ),
+                        const SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Text(
+                              'r/${community.name}',
+                              style: TextStyle(
+                                fontSize: 19,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            OutlinedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              child: const Text('Join'),
+                            ),
+                          ],
+                        ),
                       ]),
                     ),
                   ),

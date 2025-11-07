@@ -64,6 +64,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '512034762489',
     projectId: 'reddit-clone-b5636',
     storageBucket: 'reddit-clone-b5636.firebasestorage.app',
+    androidClientId: '512034762489-clumo004g56rjs68f4b5m7ek3825hpmb.apps.googleusercontent.com',
+    iosClientId: '512034762489-5q2gukf988bm7th5nobch52qsprp125b.apps.googleusercontent.com',
     iosBundleId: 'com.example.redditClone',
   );
 
@@ -73,6 +75,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '512034762489',
     projectId: 'reddit-clone-b5636',
     storageBucket: 'reddit-clone-b5636.firebasestorage.app',
+    androidClientId: '512034762489-clumo004g56rjs68f4b5m7ek3825hpmb.apps.googleusercontent.com',
+    iosClientId: '512034762489-5q2gukf988bm7th5nobch52qsprp125b.apps.googleusercontent.com',
     iosBundleId: 'com.example.redditClone',
   );
 

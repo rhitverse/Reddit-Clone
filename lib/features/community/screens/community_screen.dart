@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/core/common/error_text.dart';
 import 'package:reddit_clone/core/common/loader.dart';
+import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/community/controller/community_controller.dart';
+import 'package:routemaster/routemaster.dart';
 
 class CommunityScreen extends ConsumerWidget {
   final String name;
   const CommunityScreen({super.key, required this.name});
 
+  void navigatorToMode$Tools(BuildContext context) {
+    Routemaster.of(context).push('/mod-tools');
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userProvider)!;
     return Scaffold(
       body: ref
           .watch(getCommunityByNameProvider(name))
@@ -45,6 +52,7 @@ class CommunityScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 5),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               'r/${community.name}',
@@ -53,16 +61,46 @@ class CommunityScreen extends ConsumerWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            OutlinedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
-                              child: const Text('Join'),
-                            ),
+                            community.mods.contains(user.uid)
+                                ? OutlinedButton(
+                                    onPressed: () {
+                                      navigatorToMode$Tools(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 25,
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      'Mod Tools',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                  )
+                                : OutlinedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 25,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      community.members.contains(user.uid)
+                                          ? 'Joined'
+                                          : 'Join',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                  ),
                           ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Text('${community.members.length} members'),
                         ),
                       ]),
                     ),

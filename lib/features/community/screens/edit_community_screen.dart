@@ -1,5 +1,3 @@
-import 'dart:ui' as BorderType;
-
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,25 +36,55 @@ class _State extends ConsumerState<EditCommunityScreen> {
                 ),
               ],
             ),
-            body: Column(
-              children: [
-                DottedBorder(
-                  child: Container(
-                    width: double.infinity,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 200,
+                    child: Stack(
+                      children: [
+                        DottedBorder(
+                          borderType: BorderType.RRect,
+                          radius: const Radius.circular(10),
+                          dashPattern: const [10, 4],
+                          color: Pallete
+                              .darkModeAppTheme
+                              .textTheme
+                              .bodyMedium!
+                              .color!,
+                          strokeWidth: 2,
+                          child: Container(
+                            width: double.infinity,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child:
+                                community.banner.isEmpty ||
+                                    community.banner == Constants.bannerDefault
+                                ? const Center(
+                                    child: Icon(
+                                      Icons.camera_alt_outlined,
+                                      size: 40,
+                                    ),
+                                  )
+                                : Image.network(community.banner),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 20,
+                          left: 20,
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(community.avatar),
+                            radius: 32,
+                          ),
+                        ),
+                      ],
                     ),
-                    child:
-                        community.banner.isEmpty ||
-                            community.banner == Constants.bannerDefault
-                        ? const Center(
-                            child: Icon(Icons.camera_alt_outlined, size: 40),
-                          )
-                        : Image.network(community.banner),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           loading: () => const Loader(),

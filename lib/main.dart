@@ -50,10 +50,11 @@ class _MyAppState extends ConsumerState<MyApp> {
             routerDelegate: RoutemasterDelegate(
               routesBuilder: (context) {
                 if (data != null) {
-                  getData(ref, data);
-                  if (userModel != null) {
-                    return loggedInRoute;
+                  if (userModel == null) {
+                    getData(ref, data); // sirf ek baar chalega
+                    return loggedOutRoute; // tab tak loading route
                   }
+                  return loggedInRoute;
                 }
                 return loggedOutRoute;
               },

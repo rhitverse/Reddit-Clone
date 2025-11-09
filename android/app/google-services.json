@@ -1,49 +1,42 @@
 {
   "project_info": {
-    "project_number": "512034762489",
-    "project_id": "reddit-clone-b5636",
-    "storage_bucket": "reddit-clone-b5636.firebasestorage.app"
+    "project_number": "441757528597",
+    "project_id": "reddit-clone-5c1ce",
+    "storage_bucket": "reddit-clone-5c1ce.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:512034762489:android:434b7491e4585351917c28",
+        "mobilesdk_app_id": "1:441757528597:android:04ac0382527a7f0338941c",
         "android_client_info": {
           "package_name": "com.example.reddit_clone"
         }
       },
       "oauth_client": [
         {
-          "client_id": "512034762489-pp331s4uds7ip86b120ma96bveh49g0l.apps.googleusercontent.com",
+          "client_id": "441757528597-j0vnq02b9i5bkokmbrnifj2g0cohimrq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.reddit_clone",
-            "certificate_hash": "d5f8c448fbcb3492e0e430d77dae8f739cc46630"
+            "certificate_hash": "4559292a1b033555a6611535a56c8a25fc1f898b"
           }
         },
         {
-          "client_id": "512034762489-je5j43aq5d8s3503dqvt101ju6141rag.apps.googleusercontent.com",
+          "client_id": "441757528597-suqhf4b7gioj2ud4ntsq9d2drs677p2v.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB-DCeiqVPA90UP1llCG_bJCkKfFv8eOEA"
+          "current_key": "AIzaSyC5z0n0OZXWB6bijEwbYyxdqWmepcmAbN0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "512034762489-je5j43aq5d8s3503dqvt101ju6141rag.apps.googleusercontent.com",
+              "client_id": "441757528597-suqhf4b7gioj2ud4ntsq9d2drs677p2v.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "512034762489-5q2gukf988bm7th5nobch52qsprp125b.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.redditClone"
-              }
             }
           ]
         }

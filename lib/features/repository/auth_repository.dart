@@ -14,7 +14,7 @@ final authRepositoryProvider = Provider(
   (ref) => AuthRepository(
     firestore: ref.read(firestoreProvider),
     auth: ref.read(authProvider),
-    googleSignIn: ref.read(googleSingInProvider),
+    googleSignIn: ref.read(googleSignInProvider),
   ),
 );
 
@@ -75,11 +75,12 @@ class AuthRepository {
   }
 
   Stream<UserModel> getUserData(String uid) {
-    return _users
-        .doc(uid)
-        .snapshots()
-        .map(
-          (event) => UserModel.fromMap(event.data() as Map<String, dynamic>),
-        );
+    return _users.doc(uid).snapshots().map((event) {
+      final data = event.data() as Map<String, dynamic>?;
+      if (data == null) {
+        throw Exception('User document not found for uid: $uid');
+      }
+      return UserModel.fromMap(data);
+    });
   }
 }

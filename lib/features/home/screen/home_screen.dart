@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/home/screen/drawers/community_list_drawer.dart';
+import 'package:reddit_clone/core/common/loader.dart'; // add if not imported
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -12,7 +13,14 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userProvider)!;
+    final user = ref.watch(userProvider);
+
+    // ✅ FIX: check null before using it
+    if (user == null) {
+      return const Scaffold(
+        body: Loader(), // you can use CircularProgressIndicator() instead
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -34,7 +42,8 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      drawer: CommunityListDrawer(),
+      drawer: const CommunityListDrawer(),
+      body: const Center(child: Text('Welcome to Reddit Clone!')),
     );
   }
 }

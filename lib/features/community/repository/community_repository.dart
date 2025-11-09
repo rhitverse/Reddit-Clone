@@ -16,42 +16,44 @@ class CommunityRepository {
   CommunityRepository({required FirebaseFirestore firestore})
     : _firestore = firestore;
 
+  CollectionReference get _communities =>
+      _firestore.collection(FirebaseConstants.communitiesCollection);
+
   FutureVoid createCommunity(Community community) async {
     try {
-      var communityDoc = await _communities.doc(community.name).get();
+      final communityDoc = await _communities.doc(community.name).get();
+
       if (communityDoc.exists) {
-        throw 'Community with the same name already exists!';
+        return left(Failure('Community with the same name already exists!'));
       }
 
-      return right(_communities.doc(community.name).set(community.toMap()));
+      await _communities.doc(community.name).set(community.toMap());
+      print(
+        "✅ Community '${community.name}' created successfully in Firestore",
+      );
+      return right(null);
     } on FirebaseException catch (e) {
-      throw e.message!;
+      print("❌ Firebase error: ${e.message}");
+      return left(Failure(e.message ?? 'Firebase error occurred'));
     } catch (e) {
+      print("❌ Unknown error: $e");
       return left(Failure(e.toString()));
     }
   }
 
   Stream<List<Community>> getUserCommunities(String uid) {
     return _communities.where('members', arrayContains: uid).snapshots().map((
-      event,
+      snapshot,
     ) {
-      List<Community> communities = [];
-      for (var doc in event.docs) {
-        communities.add(Community.fromMap(doc.data() as Map<String, dynamic>));
-      }
-      return communities;
+      return snapshot.docs
+          .map((doc) => Community.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
     });
   }
 
   Stream<Community> getCommunitByName(String name) {
-    return _communities
-        .doc(name)
-        .snapshots()
-        .map(
-          (event) => Community.fromMap(event.data() as Map<String, dynamic>),
-        );
+    return _communities.doc(name).snapshots().map((snapshot) {
+      return Community.fromMap(snapshot.data() as Map<String, dynamic>);
+    });
   }
-
-  CollectionReference get _communities =>
-      _firestore.collection(FirebaseConstants.communitiesCollection);
 }

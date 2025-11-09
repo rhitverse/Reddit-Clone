@@ -7,6 +7,7 @@ import 'package:reddit_clone/core/common/loader.dart';
 import 'package:reddit_clone/core/constants/constants.dart';
 import 'package:reddit_clone/core/utils.dart';
 import 'package:reddit_clone/features/community/controller/community_controller.dart';
+import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 
 class EditCommunityScreen extends ConsumerStatefulWidget {
@@ -42,6 +43,17 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
     }
   }
 
+  void save(Community community) {
+    ref
+        .read(communityControllerProvider.notifier)
+        .editCommunity(
+          profileFile: profileFile,
+          bannerFile: bannerFile,
+          context: context,
+          community: community,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ref
@@ -54,7 +66,7 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
               centerTitle: false,
               actions: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () => save(community),
                   child: const Text(
                     'Save',
                     style: TextStyle(color: Colors.blue),

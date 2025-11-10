@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
+import 'package:reddit_clone/features/home/screen/delegates/search_community_delegate.dart';
 import 'package:reddit_clone/features/home/screen/drawers/community_list_drawer.dart';
 import 'package:reddit_clone/core/common/loader.dart'; // add if not imported
 
@@ -35,7 +36,15 @@ class HomeScreen extends ConsumerWidget {
           },
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search_rounded)),
+          IconButton(
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: SearchCommunityDelegate(ref),
+              );
+            },
+            icon: const Icon(Icons.search_rounded),
+          ),
           IconButton(
             icon: CircleAvatar(backgroundImage: NetworkImage(user.profilePic)),
             onPressed: () {},
@@ -43,7 +52,6 @@ class HomeScreen extends ConsumerWidget {
         ],
       ),
       drawer: const CommunityListDrawer(),
-      body: const Center(child: Text('Welcome to Reddit Clone!')),
     );
   }
 }

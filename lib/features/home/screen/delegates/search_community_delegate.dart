@@ -8,6 +8,7 @@ import 'package:routemaster/routemaster.dart';
 class SearchCommunityDelegate extends SearchDelegate {
   final WidgetRef ref;
   SearchCommunityDelegate(this.ref);
+
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
@@ -35,10 +36,10 @@ class SearchCommunityDelegate extends SearchDelegate {
     return ref
         .watch(searchCommunityProvider(query))
         .when(
-          data: (communities) => ListView.builder(
-            itemCount: communities.length,
+          data: (communites) => ListView.builder(
+            itemCount: communites.length,
             itemBuilder: (BuildContext context, int index) {
-              final community = communities[index];
+              final community = communites[index];
               return ListTile(
                 leading: CircleAvatar(
                   backgroundImage: NetworkImage(community.avatar),

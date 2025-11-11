@@ -51,7 +51,7 @@ class CommunityRepository {
     });
   }
 
-  Stream<Community> getCommunitByName(String name) {
+  Stream<Community> getCommunityByName(String name) {
     return _communities.doc(name).snapshots().map((snapshot) {
       return Community.fromMap(snapshot.data() as Map<String, dynamic>);
     });
@@ -68,23 +68,38 @@ class CommunityRepository {
   }
 
   Stream<List<Community>> searchCommunity(String query) {
+    final searchKey = query.toLowerCase().trim();
+
+    // 🔹 Agar query empty hai — sabse popular (ya limited) communities show kar do
+    if (searchKey.isEmpty) {
+      print("🔍 Empty query — showing first 25 communities");
+      return _communities.orderBy('name').limit(25).snapshots().map((snapshot) {
+        return snapshot.docs
+            .map((doc) => Community.fromMap(doc.data() as Map<String, dynamic>))
+            .toList();
+      });
+    }
+
+    // 🔹 Firestore text search using startAt / endAt
     return _communities
-        .where(
-          'name',
-          isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
-          isLessThan: query.isEmpty
-              ? null
-              : query.substring(0, query.length - 1) +
-                    String.fromCharCode(query.codeUnitAt(query.length - 1) + 1),
-        )
+        .orderBy('name')
+        .startAt([searchKey])
+        .endAt([searchKey + '\uf8ff'])
         .snapshots()
-        .map((event) {
-          List<Community> communities = [];
-          for (var community in event.docs) {
-            communities.add(
-              Community.fromMap(community.data() as Map<String, dynamic>),
-            );
+        .map((snapshot) {
+          final communities = snapshot.docs
+              .map(
+                (doc) => Community.fromMap(doc.data() as Map<String, dynamic>),
+              )
+              // local filter (safety in case Firestore index missing)
+              .where((c) => c.name.toLowerCase().contains(searchKey))
+              .toList();
+
+          print("🔎 Query: '$searchKey' → Found: ${communities.length}");
+          for (var c in communities) {
+            print("📄 Community: ${c.name}");
           }
+
           return communities;
         });
   }

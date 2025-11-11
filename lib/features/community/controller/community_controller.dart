@@ -29,11 +29,16 @@ final communityControllerProvider =
 final getCommunityByNameProvider = StreamProvider.family((ref, String name) {
   return ref
       .watch(communityControllerProvider.notifier)
-      .getCommunitByName(name);
+      .getCommunityByName(name);
 });
 
-final searchCommunityProvider = StreamProvider.family((ref, String query) {
-  return ref.watch(communityControllerProvider.notifier).searchCommunity(query);
+final searchCommunityProvider = StreamProvider.family<List<Community>, String>((
+  ref,
+  query,
+) {
+  print("🏭 [PROVIDER] searchCommunityProvider created for query: '$query'");
+  final communityRepository = ref.watch(communityRepositoryProvider);
+  return communityRepository.searchCommunity(query);
 });
 
 class CommunityController extends StateNotifier<bool> {
@@ -54,7 +59,7 @@ class CommunityController extends StateNotifier<bool> {
     final uid = _ref.read(userProvider)?.uid ?? '';
     Community community = Community(
       id: name,
-      name: name,
+      name: name.toLowerCase(),
       banner: Constants.bannerDefault,
       avatar: Constants.avatarDefault,
       members: [uid],
@@ -74,8 +79,8 @@ class CommunityController extends StateNotifier<bool> {
     return _communityRepository.getUserCommunities(uid);
   }
 
-  Stream<Community> getCommunitByName(String name) {
-    return _communityRepository.getCommunitByName(name);
+  Stream<Community> getCommunityByName(String name) {
+    return _communityRepository.getCommunityByName(name);
   }
 
   void editCommunity({

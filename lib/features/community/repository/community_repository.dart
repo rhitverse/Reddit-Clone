@@ -16,45 +16,40 @@ class CommunityRepository {
   CommunityRepository({required FirebaseFirestore firestore})
     : _firestore = firestore;
 
-  CollectionReference get _communities =>
-      _firestore.collection(FirebaseConstants.communitiesCollection);
-
   FutureVoid createCommunity(Community community) async {
     try {
-      final communityDoc = await _communities.doc(community.name).get();
-
+      var communityDoc = await _communities.doc(community.name).get();
       if (communityDoc.exists) {
-        return left(Failure('Community with the same name already exists!'));
+        throw 'Community with the same name already exists!';
       }
 
-      await _communities.doc(community.name).set(community.toMap());
-      print(
-        "✅ Community '${community.name}' created successfully in Firestore",
-      );
-      return right(null);
+      return right(_communities.doc(community.name).set(community.toMap()));
     } on FirebaseException catch (e) {
-      print("❌ Firebase error: ${e.message}");
-      return left(Failure(e.message ?? 'Firebase error occurred'));
+      throw e.message!;
     } catch (e) {
-      print("❌ Unknown error: $e");
       return left(Failure(e.toString()));
     }
   }
 
   Stream<List<Community>> getUserCommunities(String uid) {
     return _communities.where('members', arrayContains: uid).snapshots().map((
-      snapshot,
+      event,
     ) {
-      return snapshot.docs
-          .map((doc) => Community.fromMap(doc.data() as Map<String, dynamic>))
-          .toList();
+      List<Community> communities = [];
+      for (var doc in event.docs) {
+        communities.add(Community.fromMap(doc.data() as Map<String, dynamic>));
+      }
+      return communities;
     });
   }
 
   Stream<Community> getCommunityByName(String name) {
-    return _communities.doc(name).snapshots().map((snapshot) {
-      return Community.fromMap(snapshot.data() as Map<String, dynamic>);
-    });
+    return _communities
+        .doc(name)
+        .snapshots()
+        .map(
+          (event) => Community.fromMap(event.data() as Map<String, dynamic>),
+        );
   }
 
   FutureVoid editCommunity(Community community) async {
@@ -68,39 +63,27 @@ class CommunityRepository {
   }
 
   Stream<List<Community>> searchCommunity(String query) {
-    final searchKey = query.toLowerCase().trim();
-
-    // 🔹 Agar query empty hai — sabse popular (ya limited) communities show kar do
-    if (searchKey.isEmpty) {
-      print("🔍 Empty query — showing first 25 communities");
-      return _communities.orderBy('name').limit(25).snapshots().map((snapshot) {
-        return snapshot.docs
-            .map((doc) => Community.fromMap(doc.data() as Map<String, dynamic>))
-            .toList();
-      });
-    }
-
-    // 🔹 Firestore text search using startAt / endAt
     return _communities
-        .orderBy('name')
-        .startAt([searchKey])
-        .endAt([searchKey + '\uf8ff'])
+        .where(
+          'name',
+          isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
+          isLessThan: query.isEmpty
+              ? null
+              : query.substring(0, query.length - 1) +
+                    String.fromCharCode(query.codeUnitAt(query.length - 1) + 1),
+        )
         .snapshots()
-        .map((snapshot) {
-          final communities = snapshot.docs
-              .map(
-                (doc) => Community.fromMap(doc.data() as Map<String, dynamic>),
-              )
-              // local filter (safety in case Firestore index missing)
-              .where((c) => c.name.toLowerCase().contains(searchKey))
-              .toList();
-
-          print("🔎 Query: '$searchKey' → Found: ${communities.length}");
-          for (var c in communities) {
-            print("📄 Community: ${c.name}");
+        .map((event) {
+          List<Community> communities = [];
+          for (var community in event.docs) {
+            communities.add(
+              Community.fromMap(community.data() as Map<String, dynamic>),
+            );
           }
-
           return communities;
         });
   }
+
+  CollectionReference get _communities =>
+      _firestore.collection(FirebaseConstants.communitiesCollection);
 }

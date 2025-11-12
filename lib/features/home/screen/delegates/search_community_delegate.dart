@@ -41,7 +41,7 @@ class SearchCommunityDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final communitiesResult = ref.watch(userCommunitiesProvider);
+    final communitiesResult = ref.watch(allCommunitiesProvider);
 
     return communitiesResult.when(
       data: (communities) {
@@ -52,6 +52,25 @@ class SearchCommunityDelegate extends SearchDelegate {
                 final searchQuery = query.toLowerCase();
                 return communityName.contains(searchQuery);
               }).toList();
+
+        print(
+          '🔎 [FILTER] Filtered to: ${filteredCommunities.length} communities',
+        );
+        for (var c in filteredCommunities) {
+          print('   → r/${c.name}');
+        }
+
+        // Show message if no communities found
+        if (filteredCommunities.isEmpty) {
+          return Center(
+            child: Text(
+              query.isEmpty
+                  ? 'No communities available'
+                  : 'No communities found for "$query"',
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          );
+        }
 
         return ListView.builder(
           itemCount: filteredCommunities.length,

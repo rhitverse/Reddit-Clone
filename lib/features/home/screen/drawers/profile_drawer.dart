@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
+import 'package:reddit_clone/features/community/controller/community_controller.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 
 class ProfileDrawer extends ConsumerWidget {
   const ProfileDrawer({super.key});
 
   void logOut(WidgetRef ref) {
+    // Invalidate community providers to clear cache
+    ref.invalidate(userCommunitiesProvider);
+    // If you have searchCommunityProvider, invalidate it too
+    // ref.invalidate(searchCommunityProvider);
+    
+    print('🔄 [LOGOUT] Communities cache cleared');
+    
+    // Call logout
     ref.read(authControllerProvider.notifier).logout();
   }
 

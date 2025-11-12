@@ -15,7 +15,7 @@ final communityRepositoryProvider = Provider((ref) {
 class CommunityRepository {
   final FirebaseFirestore _firestore;
   CommunityRepository({required FirebaseFirestore firestore})
-      : _firestore = firestore {
+    : _firestore = firestore {
     print('🧱 [INIT] CommunityRepository instance created');
   }
 
@@ -41,13 +41,40 @@ class CommunityRepository {
     }
   }
 
+  FutureVoid joinCommunity(String communityName, String userId) async {
+    try {
+      return right(
+        _communities.doc(communityName).update({
+          'members': FieldValue.arrayUnion([userId]),
+        }),
+      );
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid leaveCommunity(String communityName, String userId) async {
+    try {
+      return right(
+        _communities.doc(communityName).update({
+          'members': FieldValue.arrayRemove([userId]),
+        }),
+      );
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
   // 🔵 GET USER COMMUNITIES
   Stream<List<Community>> getUserCommunities(String uid) {
     print('📡 [STREAM] Listening for communities of user: $uid');
-    return _communities
-        .where('members', arrayContains: uid)
-        .snapshots()
-        .map((event) {
+    return _communities.where('members', arrayContains: uid).snapshots().map((
+      event,
+    ) {
       print('📦 [DATA] Received ${event.docs.length} community docs for user');
       List<Community> communities = [];
       for (var doc in event.docs) {
@@ -96,18 +123,44 @@ class CommunityRepository {
           isLessThan: query.isEmpty
               ? null
               : query.substring(0, query.length - 1) +
-                  String.fromCharCode(
-                    query.codeUnitAt(query.length - 1) + 1,
-                  ),
+                    String.fromCharCode(query.codeUnitAt(query.length - 1) + 1),
         )
         .snapshots()
         .map((event) {
-      List<Community> communities = [];
-      for (var community in event.docs) {
-        communities.add(Community.fromMap(community.data() as Map<String, dynamic>));
-      }
-      return communities;
-    });
+          List<Community> communities = [];
+          for (var community in event.docs) {
+            communities.add(
+              Community.fromMap(community.data() as Map<String, dynamic>),
+            );
+          }
+          return communities;
+        });
+  }
+
+  Stream<List<Community>> getAllCommunities() {
+    return _communities
+        .orderBy('name') // Alphabetical order
+        .snapshots()
+        .map((event) {
+          List<Community> communities = [];
+          for (var doc in event.docs) {
+            communities.add(
+              Community.fromMap(doc.data() as Map<String, dynamic>),
+            );
+          }
+          print('📦 [REPO] Fetched ${communities.length} total communities');
+          return communities;
+        });
+  }
+
+  FutureVoid addMods(String communityName, List<String> uids) async {
+    try {
+      return right(_communities.doc(communityName).update({'mods': uids}));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
   }
 
   // 🧩 COLLECTION REFERENCE

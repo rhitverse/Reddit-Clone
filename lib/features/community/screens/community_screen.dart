@@ -11,7 +11,7 @@ class CommunityScreen extends ConsumerWidget {
   final String name;
   const CommunityScreen({super.key, required this.name});
 
-  void navigatorToMode$Tools(BuildContext context) {
+  void navigatorToModeTools(BuildContext context) {
     Routemaster.of(context).push('/mod-tools/$name');
   }
 
@@ -71,7 +71,7 @@ class CommunityScreen extends ConsumerWidget {
                             community.mods.contains(user.uid)
                                 ? OutlinedButton(
                                     onPressed: () {
-                                      navigatorToMode$Tools(context);
+                                      navigatorToModeTools(context);
                                     },
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(

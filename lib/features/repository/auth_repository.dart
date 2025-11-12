@@ -83,4 +83,9 @@ class AuthRepository {
       return UserModel.fromMap(data);
     });
   }
+
+  void logOut() async {
+    await _googleSignIn.signOut();
+    await _auth.signOut();
+  }
 }

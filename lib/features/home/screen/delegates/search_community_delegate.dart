@@ -38,44 +38,42 @@ class SearchCommunityDelegate extends SearchDelegate {
     print('📄 [UI] buildResults() called — currently returns empty box');
     return const SizedBox();
   }
- 
-@override
-Widget buildSuggestions(BuildContext context) {
-final communitiesResult = ref.watch(userCommunitiesProvider);
-  
-  return communitiesResult.when(
-    data: (communities) {
-     
-      final filteredCommunities = query.isEmpty
-          ? communities
-          : communities.where((community) {
-              final communityName = community.name.toLowerCase();
-              final searchQuery = query.toLowerCase();
-              return communityName.contains(searchQuery);
-            }).toList();
-      
-      return ListView.builder(
-        itemCount: filteredCommunities.length,
-        itemBuilder: (BuildContext context, int index) {
-          final community = filteredCommunities[index];
- 
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(community.avatar),
-            ),
-            title: Text('r/${community.name}'),
-            onTap: () => navigateToCommunity(context, community.name),
-          );
-        },
-      );
-    },
-    error: (error, stackTrace) => ErrorText(
-      error: error.toString()
-    ),
-    loading: () => const Loader(),
-  );
-}
-void navigateToCommunity(BuildContext context, String communityName) {
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final communitiesResult = ref.watch(userCommunitiesProvider);
+
+    return communitiesResult.when(
+      data: (communities) {
+        final filteredCommunities = query.isEmpty
+            ? communities
+            : communities.where((community) {
+                final communityName = community.name.toLowerCase();
+                final searchQuery = query.toLowerCase();
+                return communityName.contains(searchQuery);
+              }).toList();
+
+        return ListView.builder(
+          itemCount: filteredCommunities.length,
+          itemBuilder: (BuildContext context, int index) {
+            final community = filteredCommunities[index];
+
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(community.avatar),
+              ),
+              title: Text('r/${community.name}'),
+              onTap: () => navigateToCommunity(context, community.name),
+            );
+          },
+        );
+      },
+      error: (error, stackTrace) => ErrorText(error: error.toString()),
+      loading: () => const Loader(),
+    );
+  }
+
+  void navigateToCommunity(BuildContext context, String communityName) {
     Routemaster.of(context).push('/r/$communityName');
   }
 }

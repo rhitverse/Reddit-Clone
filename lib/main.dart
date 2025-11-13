@@ -26,7 +26,7 @@ class MyApp extends ConsumerWidget {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
           title: 'Reddit Clone',
-          theme: Pallete.darkModeAppTheme,
+          theme: ref.watch(themeNotifierProvider),
           routerDelegate: RoutemasterDelegate(
             routesBuilder: (_) {
               if (user != null) {

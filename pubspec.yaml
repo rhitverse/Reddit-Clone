@@ -46,6 +46,7 @@ dependencies:
   dotted_border: ^2.0.0+2
   file_picker: ^10.3.3
   http: ^1.2.0
+  shared_preferences: ^2.5.3
 
 
 dev_dependencies:

@@ -3,10 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/core/common/error_text.dart';
 import 'package:reddit_clone/core/common/loader.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
+import 'package:routemaster/routemaster.dart';
 
 class UserProfileScreen extends ConsumerWidget {
   final String uid;
   const UserProfileScreen({super.key, required this.uid});
+
+  void navigateToEditUser(BuildContext context) {
+    Routemaster.of(context).push('/edit-profile/$uid');
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,7 +45,7 @@ class UserProfileScreen extends ConsumerWidget {
                           alignment: Alignment.bottomLeft,
                           padding: const EdgeInsets.all(20),
                           child: OutlinedButton(
-                            onPressed: () {},
+                            onPressed: () => navigateToEditUser(context),
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),

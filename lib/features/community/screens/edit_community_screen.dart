@@ -62,7 +62,7 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
         .watch(getCommunityByNameProvider(widget.name))
         .when(
           data: (community) => Scaffold(
-            backgroundColor: currentTheme.colorScheme.background,
+            backgroundColor: currentTheme.colorScheme.surface,
             appBar: AppBar(
               title: const Text('Edit Community'),
               centerTitle: false,

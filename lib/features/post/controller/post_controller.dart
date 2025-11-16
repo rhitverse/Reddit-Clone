@@ -7,6 +7,7 @@ import 'package:reddit_clone/core/providers/storage_repository_provider.dart';
 import 'package:reddit_clone/core/utils.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/post/repository/post_repository.dart';
+import 'package:reddit_clone/features/user_profile/controller/user_profile_controller.dart';
 import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
@@ -69,6 +70,7 @@ class PostController extends StateNotifier<bool> {
     );
 
     final res = await _postRepository.addPost(post);
+       _ref.read(userProfileControllerProvider.notifier);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Posted successfully!');
@@ -110,7 +112,7 @@ class PostController extends StateNotifier<bool> {
     });
   }
 
-  void shareimagePost({
+  void shareImagePost({
     required BuildContext context,
     required String title,
     required Community selectedCommunity,
@@ -136,7 +138,7 @@ class PostController extends StateNotifier<bool> {
         commentCount: 0,
         username: user.name,
         uid: user.uid,
-        type: 'text',
+        type: 'image',
         createdAt: DateTime.now(),
         awards: [],
         link: r,

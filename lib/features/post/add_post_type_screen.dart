@@ -52,7 +52,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
         titleController.text.isNotEmpty) {
       ref
           .read(postControllerProvider.notifier)
-          .shareimagePost(
+          .shareImagePost(
             context: context,
             title: titleController.text.trim(),
             selectedCommunity: selectedCommunity ?? communities[0],
@@ -162,6 +162,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
                         filled: true,
                         hintText: 'Enter link here',
                         border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(18),
                       ),
                     ),
                   const SizedBox(height: 20),

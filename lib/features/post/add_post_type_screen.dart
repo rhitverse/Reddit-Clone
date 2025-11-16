@@ -72,11 +72,11 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
         linkController.text.isNotEmpty) {
       ref
           .read(postControllerProvider.notifier)
-          .shareTextPost(
+          .shareLinkPost(
             context: context,
             title: titleController.text.trim(),
             selectedCommunity: selectedCommunity ?? communities[0],
-            description: descriptionController.text.trim(),
+             link: linkController.text.trim(),
           );
     } else {
       showSnackBar(context, 'Its not valid mf');

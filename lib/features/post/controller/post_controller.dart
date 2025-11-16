@@ -25,7 +25,10 @@ final postControllerProvider = StateNotifierProvider<PostController, bool>((
   );
 });
 
-final userPostsProvider = StreamProvider.family((ref, List<Community> communities) {
+final userPostsProvider = StreamProvider.family((
+  ref,
+  List<Community> communities,
+) {
   final postController = ref.watch(postControllerProvider.notifier);
   return postController.fetchUserPosts(communities);
 });
@@ -49,6 +52,7 @@ class PostController extends StateNotifier<bool> {
     required Community selectedCommunity,
     required String link,
   }) async {
+    print('shareLinkPost called with link: $link');
     state = true;
     String postId = const Uuid().v1();
     final user = _ref.read(userProvider)!;
@@ -70,7 +74,7 @@ class PostController extends StateNotifier<bool> {
     );
 
     final res = await _postRepository.addPost(post);
-       _ref.read(userProfileControllerProvider.notifier);
+    _ref.read(userProfileControllerProvider.notifier);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Posted successfully!');
@@ -158,5 +162,23 @@ class PostController extends StateNotifier<bool> {
       return _postRepository.fetchUserPosts(communities);
     }
     return Stream.value([]);
+  }
+
+  void deletePost(Post post, BuildContext context) async {
+    final res = await _postRepository.deletePost(post);
+    res.fold(
+      (l) => null,
+      (r) => showSnackBar(context, 'Post Deleted Successfully'),
+    );
+  }
+
+  void upvote(Post post) async {
+    final uid = _ref.read(userProvider)!.uid;
+    _postRepository.upvote(post, uid);
+  }
+
+  void downvote(Post post) async {
+    final uid = _ref.read(userProvider)!.uid;
+    _postRepository.downvote(post, uid);
   }
 }

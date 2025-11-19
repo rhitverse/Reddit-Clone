@@ -7,7 +7,12 @@ import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import '../core/constants/constants.dart';
 
 class LoginScreen extends ConsumerWidget {
-  const LoginScreen({super.key});
+  // ignore: use_super_parameters
+  const LoginScreen({Key? key}) : super(key: key);
+
+  void signInAsGuest(WidgetRef ref, BuildContext context) {
+    ref.read(authControllerProvider.notifier).signInAsGuest(context);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,7 +26,7 @@ class LoginScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () => signInAsGuest(ref, context),
             child: const Text(
               'Skip',
               style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),

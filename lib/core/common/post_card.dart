@@ -27,6 +27,12 @@ class PostCard extends ConsumerWidget {
     ref.read(postControllerProvider.notifier).downvote(post);
   }
 
+  void awardPost(WidgetRef ref, String award, BuildContext context) async {
+    ref
+        .read(postControllerProvider.notifier)
+        .awardPost(post: post, award: award, context: context);
+  }
+
   void navigateToUser(BuildContext context) {
     Routemaster.of(context).push('/u/${post.uid}');
   }
@@ -119,6 +125,24 @@ class PostCard extends ConsumerWidget {
                                 ),
                             ],
                           ),
+
+                          if (post.awards.isNotEmpty) ...[
+                            const SizedBox(height: 5),
+                            SizedBox(
+                              height: 25,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: post.awards.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final award = post.awards[index];
+                                  return Image.asset(
+                                    Constants.awards[award]!,
+                                    height: 23,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                           Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child: Text(
@@ -235,6 +259,7 @@ class PostCard extends ConsumerWidget {
                                       child: Padding(
                                         padding: const EdgeInsets.all(20),
                                         child: GridView.builder(
+                                          shrinkWrap: true,
                                           gridDelegate:
                                               const SliverGridDelegateWithFixedCrossAxisCount(
                                                 crossAxisCount: 4,
@@ -247,8 +272,22 @@ class PostCard extends ConsumerWidget {
                                               ) {
                                                 final award =
                                                     user.awards[index];
-                                                return Image.asset(
-                                                  Constants.awards[award]!,
+
+                                                return GestureDetector(
+                                                  onTap: () => awardPost(
+                                                    ref,
+                                                    award,
+                                                    context,
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                          8.0,
+                                                        ),
+                                                    child: Image.asset(
+                                                      Constants.awards[award]!,
+                                                    ),
+                                                  ),
                                                 );
                                               },
                                         ),

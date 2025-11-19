@@ -23,7 +23,7 @@ class PostRepository {
 
   CollectionReference get _comments =>
       _firestore.collection(FirebaseConstants.commentsCollection);
-      CollectionReference get _users =>
+  CollectionReference get _users =>
       _firestore.collection(FirebaseConstants.usersCollection);
 
   FutureVoid addPost(Post post) async {
@@ -43,6 +43,18 @@ class PostRepository {
           whereIn: communities.map((e) => e.name).toList(),
         )
         .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (event) => event.docs
+              .map((e) => Post.fromMap(e.data() as Map<String, dynamic>))
+              .toList(),
+        );
+  }
+
+  Stream<List<Post>> fetchGuestPosts() {
+    return _posts
+        .orderBy('createdAt', descending: true)
+        .limit(10)
         .snapshots()
         .map(
           (event) => event.docs
@@ -137,9 +149,11 @@ class PostRepository {
       _users.doc(senderId).update({
         'awards': FieldValue.arrayRemove([award]),
       });
-      return right(_users.doc(post.uid).update({
-        'awards': FieldValue.arrayUnion([award]),
-      }));
+      return right(
+        _users.doc(post.uid).update({
+          'awards': FieldValue.arrayUnion([award]),
+        }),
+      );
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {

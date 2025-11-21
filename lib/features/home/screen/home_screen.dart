@@ -72,12 +72,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             },
             icon: const Icon(Icons.search_rounded),
           ),
-          IconButton(
-            onPressed: () {
-              Routemaster.of(context).push('/add-post');
-            },
-            icon: const Icon(Icons.add),
-          ),
+          // 🌐 Show only on Web
+          if (kIsWeb)
+            IconButton(
+              onPressed: () {
+                Routemaster.of(context).push('/add-post');
+              },
+              icon: const Icon(Icons.add),
+            ),
+
           Builder(
             builder: (context) {
               return IconButton(

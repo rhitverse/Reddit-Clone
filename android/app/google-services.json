@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "441757528597-94u4butr5k2spgtnt4rhr1e6m69f54pd.apps.googleusercontent.com",
+          "client_id": "441757528597-p1r638c3a46emb74sq5unfv2gh4ugs0v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.reddit_clone",
-            "certificate_hash": "7db05f9b0a4c056f6e99a8cbb44c4118134d6a88"
+            "certificate_hash": "e21488c309f35f29f6f7ba39d954d2acd7efb82f"
           }
         },
         {
